@@ -42,10 +42,9 @@ if ($db->connect_errno) {
     $movies = [];
 } else {
     $result = $db->query("
-        SELECT movieID, movieTitle, movieImg, movieGenre, movieDuration 
+        SELECT movieID, movieTitle, movieImg, movieGenre, movieDuration, movieRelDate 
         FROM movieTable 
-        ORDER BY movieID DESC 
-        LIMIT 6
+        ORDER BY movieRelDate DESC
     ");
 
     if (!$result) {
@@ -92,7 +91,7 @@ if ($db->connect_errno) {
                         loading="lazy"
                         onerror="this.src='img/default-poster.jpg'">
                     <div class="movie-overlay">
-                        <a href="booking.php?id=' . $movie['movieID'] . '" class="btn btn-primary">Book Now</a>
+                        <a href="booking.php?id=<?= $movie['movieID'] ?>" class="btn btn-primary">Book Now</a>
                         <a href="movie-details.php?id=<?= $movie['movieID'] ?>" class="btn btn-outline">Details</a>
                     </div>
                 </div>

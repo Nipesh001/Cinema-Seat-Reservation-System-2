@@ -83,7 +83,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <th>Movie</th>
                         <th>Main Hall</th>
                         <th>VIP Hall</th>
-                        <th>Private Hall</th>
+                        <th>Secondary Hall</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,7 +98,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 </div>
                             </td>
                             <?php
-                            $hallTypes = ['Main Hall', 'VIP Hall', 'Private Hall'];
+                            $hallTypes = ['Main Hall', 'VIP Hall', 'Secondary Hall'];
                             foreach ($hallTypes as $hallType):
                             ?>
                                 <td class="showtimes">

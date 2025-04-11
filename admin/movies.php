@@ -15,6 +15,35 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
     <link rel="stylesheet" href="../style/alert_styles.css">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <style>
+        /* Movie description textarea styling */
+        textarea[name="movieDescription"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid black;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        textarea[name="movieDescription"]:focus {
+            border-color: #4cc9f0;
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
+        }
+
+        td>a {
+            color: #0000ef;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -56,6 +85,8 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                         <input placeholder="Release Date" type="date" name="movieRelDate" required>
                         <input placeholder="Director" type="text" name="movieDirector" required>
                         <input placeholder="Actors" type="text" name="movieActors" required>
+                        <textarea placeholder="Movie Description" name="movieDescription" rows="4" required></textarea>
+                        <input placeholder="Trailer Link (YouTube URL)" type="url" name="movieTrailerLink" required>
                         <input type="file" name="movieImg" accept="image/*" required>
                         <button type="submit" name="submit" class="form-btn">Add Movie</button>
                         <?php
@@ -86,19 +117,21 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                             if ($uploadOk == 1) {
                                 if (move_uploaded_file($_FILES["movieImg"]["tmp_name"], $targetFile)) {
                                     $stmt = $link->prepare("INSERT INTO movieTable 
-                                        (movieImg, movieTitle, movieGenre, movieDuration, movieRelDate, movieDirector, movieActors)
-                                        VALUES (?, ?, ?, ?, ?, ?, ?)");
+                                        (movieImg, movieTitle, movieGenre, movieDuration, movieRelDate, movieDirector, movieActors, movieDescription, movieTrailerLink)
+                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                                     $imgPath = "img/" . $fileName;
                                     $stmt->bind_param(
-                                        "sssisss",
+                                        "sssisssss",
                                         $imgPath,
                                         $_POST["movieTitle"],
                                         $_POST["movieGenre"],
                                         $_POST["movieDuration"],
                                         $_POST["movieRelDate"],
                                         $_POST["movieDirector"],
-                                        $_POST["movieActors"]
+                                        $_POST["movieActors"],
+                                        $_POST["movieDescription"],
+                                        $_POST["movieTrailerLink"]
                                     );
 
                                     if ($stmt->execute()) {
@@ -131,6 +164,8 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                                     <th>Duration</th>
                                     <th>Director</th>
                                     <th>Actors</th>
+                                    <th>Description</th>
+                                    <th>Trailer</th>
                                     <th>Release Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -148,6 +183,8 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                                             echo '<td class="movie-duration">' . $row['movieDuration'] . ' mins</td>';
                                             echo '<td>' . $row['movieDirector'] . '</td>';
                                             echo '<td>' . $row['movieActors'] . '</td>';
+                                            echo '<td class="movie-description">' . substr($row['movieDescription'], 0, 50) . '...</td>';
+                                            echo '<td><a href="' . $row['movieTrailerLink'] . '" target="_blank">Watch</a></td>';
                                             echo '<td>' . $row['movieRelDate'] . '</td>';
                                             echo '<td class="movie-actions">';
                                             echo '<a href="editMovie.php?id=' . $row['movieID'] . '"><i class="fas fa-edit" title="Edit movie" style="margin-right:10px;color:#4CAF50;"></i></a>';

@@ -62,11 +62,16 @@ if (isset($_POST['submit'])) {
         movieDuration = ?, 
         movieRelDate = ?, 
         movieDirector = ?, 
-        movieActors = ?
+        movieActors = ?,
+        movieDescription = ?,
+        movieTrailerLink = ?
         WHERE movieID = ?");
 
+    $description = $_POST['movieDescription'];
+    $trailerLink = $_POST['movieTrailerLink'];
+    
     $stmt->bind_param(
-        "sssisssi",
+        "sssisssssi",
         $imgPath,
         $title,
         $genre,
@@ -74,6 +79,8 @@ if (isset($_POST['submit'])) {
         $relDate,
         $director,
         $actors,
+        $description,
+        $trailerLink,
         $id
     );
 
@@ -99,6 +106,30 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="../style/alert_styles.css">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    <style>
+        /* Movie description textarea styling */
+        textarea[name="movieDescription"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid black;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        textarea[name="movieDescription"]:focus {
+            border-color: #4cc9f0;
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
+        }
+    </style>
 </head>
 
 <body>
@@ -134,6 +165,8 @@ if (isset($_POST['submit'])) {
                         <input placeholder="Release Date" type="date" name="movieRelDate" value="<?= $movie['movieRelDate'] ?>" required>
                         <input placeholder="Director" type="text" name="movieDirector" value="<?= htmlspecialchars($movie['movieDirector']) ?>" required>
                         <input placeholder="Actors" type="text" name="movieActors" value="<?= htmlspecialchars($movie['movieActors']) ?>" required>
+                        <textarea placeholder="Movie Description" name="movieDescription" required><?= htmlspecialchars($movie['movieDescription']) ?></textarea>
+                        <input placeholder="Trailer Link (YouTube URL)" type="url" name="movieTrailerLink" value="<?= htmlspecialchars($movie['movieTrailerLink']) ?>" required>
                         <div class="current-image">
                             <p>Current Poster:</p>
                             <img src="../<?= $movie['movieImg'] ?>" style="max-width: 200px; margin: 10px 0;">

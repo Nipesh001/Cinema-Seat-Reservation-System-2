@@ -71,7 +71,7 @@ renderHeader();
         <div class="movie-meta">
             <span><?php echo $movie['movieGenre']; ?></span>
             <span><?php echo $movie['movieDuration']; ?> min</span>
-            <span>Rated <?php echo $movie['movieRelDate']; ?></span>
+            <span>Release Date: <?php echo $movie['movieRelDate']; ?></span>
         </div>
     </div>
 </section>
@@ -81,17 +81,39 @@ renderHeader();
         <div class="detail-content">
             <div class="trailer-container">
                 <div class="trailer-wrapper">
-                    <!-- Embedded trailer would go here -->
-                    <div class="trailer-placeholder">
-                        <i class="fas fa-play"></i>
-                        <p>Movie Trailer</p>
-                    </div>
+                    <?php if (!empty($movie['movieTrailerLink'])): 
+                        // Extract YouTube video ID from URL
+                        $videoId = '';
+                        $url = $movie['movieTrailerLink'];
+                        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $url, $matches)) {
+                            $videoId = $matches[1];
+                        }
+                    ?>
+                        <?php if ($videoId): ?>
+                            <iframe width="100%" height="100%" 
+                                src="https://www.youtube.com/embed/<?php echo $videoId; ?>?autoplay=0&rel=0" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        <?php else: ?>
+                            <div class="trailer-placeholder">
+                                <i class="fas fa-play"></i>
+                                <p>Invalid Trailer Link</p>
+                            </div>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <div class="trailer-placeholder">
+                            <i class="fas fa-play"></i>
+                            <p>No Trailer Available</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
             <div class="movie-info">
                 <h2>Synopsis</h2>
-                <!-- <p><?php echo $movie['movieDescription']; ?></p> -->
+                <p><?php echo $movie['movieDescription']; ?></p>
 
                 <div class="detail-grid">
                     <div class="detail-group">

@@ -42,10 +42,11 @@ if ($db->connect_errno) {
     $movies = [];
 } else {
     $result = $db->query("
-        SELECT movieID, movieTitle, movieImg, movieGenre, movieDuration 
-        FROM movieTable 
-        ORDER BY movieID DESC 
-        LIMIT 6
+        SELECT DISTINCT m.movieID, m.movieTitle, m.movieImg, m.movieGenre, m.movieDuration 
+        FROM movieTable m
+        JOIN scheduletable s ON m.movieID = s.movieID
+        WHERE s.scheduleDate >= CURDATE()
+        ORDER BY m.movieRelDate DESC
     ");
 
     if (!$result) {
