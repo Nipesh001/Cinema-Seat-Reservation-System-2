@@ -143,7 +143,7 @@ $bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM bookingTable"))
                                         echo '<td><img class="booking-poster" src="../' . $row['movieImg'] . '" alt="Movie Poster"></td>';
                                         echo '<td class="booking-movie">' . $row['movieName'] . '</td>';
                                         echo '<td class="booking-theater">' . $row['bookingTheatre'] . '</td>';
-                                        echo '<td>' . $row['bookingDate'] . '<span class="time-display">' . $row['bookingTime'] . '</span>' . '</td>';
+                                        echo '<td>' . $row['bookingDate'] . ' <span class="time-display">' . $row['bookingTime'] . '</span>' . '</td>';
                                         echo '<td>';
                                         if ($seatInfoAvailable) {
                                             echo !empty($row['seatNumbers']) ? $row['seatNumbers'] : 'No seats booked';
