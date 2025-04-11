@@ -183,9 +183,16 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                                             echo '<td><a href="' . $row['movieTrailerLink'] . '" target="_blank">Watch</a></td>';
                                             echo '<td>' . $row['movieRelDate'] . '</td>';
                                             echo '<td class="movie-actions">';
-                                            echo '<a href="editMovie.php?id=' . $row['movieID'] . '"><i class="fas fa-edit" title="Edit movie" style="margin-right:10px;color:#4CAF50;"></i></a>';
-                                            echo '<a href="deleteMovie.php?id=' . $row['movieID'] . '" onclick="return confirm(\'Delete ' . htmlspecialchars($row['movieTitle']) . '? This cannot be undone!\')">';
-                                            echo '<i class="fas fa-trash" title="Delete movie"></i></a>';
+                                            
+                                            if ($_SESSION['isSuperAdmin'] ?? false) {
+                                                echo '<a href="editMovie.php?id=' . $row['movieID'] . '"><i class="fas fa-edit" title="Edit movie" style="margin-right:10px;color:#4CAF50;"></i></a>';
+                                                echo '<a href="deleteMovie.php?id=' . $row['movieID'] . '" onclick="return confirm(\'Delete ' . htmlspecialchars($row['movieTitle']) . '? This cannot be undone!\')">';
+                                                echo '<i class="fas fa-trash" title="Delete movie"></i></a>';
+                                            } else {
+                                                echo '<span class="disabled-action"><i class="fas fa-edit" title="Edit (Super Admin only)" style="margin-right:10px;color:#cccccc;"></i></span>';
+                                                echo '<span class="disabled-action"><i class="fas fa-trash" title="Delete (Super Admin only)"></i></span>';
+                                            }
+                                            
                                             echo '</td>';
                                             echo '</tr>';
                                         }

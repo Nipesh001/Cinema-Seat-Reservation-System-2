@@ -155,8 +155,12 @@ $bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FRO
                                         echo '<td>' . $row['bookingFName'] . ' ' . $row['bookingLName'] . '</td>';
                                         echo '<td>' . $row['bookingPNumber'] . '</td>';
                                         echo '<td class="booking-actions">';
-                                        echo '<a href="deleteBooking.php?id=' . $row['bookingID'] . '" onclick="return confirm(\'Are you sure you want to delete booking #' . $row['bookingID'] . '?\')">';
-                                        echo '<i class="fas fa-trash" title="Delete booking"></i></a>';
+                                        if ($_SESSION['isSuperAdmin'] ?? false) {
+                                            echo '<a href="deleteBooking.php?id=' . $row['bookingID'] . '" onclick="return confirm(\'Are you sure you want to delete booking #' . $row['bookingID'] . '?\')">';
+                                            echo '<i class="fas fa-trash" title="Delete booking"></i></a>';
+                                        } else {
+                                            echo '<span class="disabled-action"><i class="fas fa-trash" title="Delete (Super Admin only)"></i></span>';
+                                        }
                                         echo '</td>';
                                         echo '</tr>';
                                     }

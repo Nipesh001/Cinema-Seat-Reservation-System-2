@@ -16,10 +16,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     
-    if ($username === $admin_username && $password === $admin_password) {
+    $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
+    $query = "SELECT * FROM adminTable WHERE adminUsername = ?";
+    $stmt = mysqli_prepare($link, $query);
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_close($link);
+
+    if ($row && password_verify($password, $row['adminPassword'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $username;
-        header('Location: dashboard.php');
+        $_SESSION['admin_id'] = $row['adminID'];
+        $_SESSION['isSuperAdmin'] = $row['isSuperAdmin'];
+        // Redirect to originally requested page or dashboard
+        $redirect = $_SESSION['redirect'] ?? 'dashboard.php';
+        unset($_SESSION['redirect']);
+        header("Location: $redirect");
         exit;
     } else {
         $error = 'Invalid username or password';

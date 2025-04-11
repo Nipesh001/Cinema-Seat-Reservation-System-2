@@ -119,6 +119,35 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                     </table>
                 </div>
             </div>
+            <?php if ($_SESSION['isSuperAdmin'] ?? false): ?>
+            <div class="admin-section-panel">
+                <div class="admin-panel-section-header">
+                    <h2>Create New Admin</h2>
+                    <i class="fas fa-user-plus" style="background-color: #3cbb6c"></i>
+                </div>
+                <div class="admin-panel-section-content">
+                    <form action="createAdmin.php" method="POST" class="admin-creation-form">
+                        <div class="form-group">
+                            <label>Username:</label>
+                            <input type="text" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name:</label>
+                            <input type="text" name="fullname" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Admin</button>
+                    </form>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </body>
