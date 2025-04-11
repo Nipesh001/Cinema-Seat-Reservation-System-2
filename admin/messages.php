@@ -17,6 +17,7 @@ if (mysqli_num_rows($tableExists) > 0) {
     <link rel="icon" type="image/png" href="../img/logo.png">
     <link rel="stylesheet" href="../style/styles.css">
     <link rel="stylesheet" href="../style/alert_styles.css">
+    <link rel="stylesheet" href="../style/admin-styles.css">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
 </head>

@@ -8,7 +8,7 @@ if (mysqli_num_rows($result) == 0) {
     mysqli_query($link, "ALTER TABLE bookingTable ADD COLUMN bookingSeats VARCHAR(255) NOT NULL DEFAULT 'N/A'");
 }
 
-$bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM bookingTable"));
+$bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FROM bookingTable"));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +20,7 @@ $bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM bookingTable"))
     <link rel="icon" type="image/png" href="../img/logo.png">
     <link rel="stylesheet" href="../style/styles.css">
     <link rel="stylesheet" href="../style/alert_styles.css">
+    <link rel="stylesheet" href="../style/admin-styles.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
 
 </head>

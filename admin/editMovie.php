@@ -111,8 +111,8 @@ if (isset($_POST['submit'])) {
         textarea[name="movieDescription"] {
             width: 100%;
             padding: 12px;
-            border: 2px solid black;
-            border-radius: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-family: inherit;
             font-size: 14px;
             margin-bottom: 15px;

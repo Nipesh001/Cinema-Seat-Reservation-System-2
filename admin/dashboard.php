@@ -1,7 +1,7 @@
 <?php
 require_once 'auth_check.php';
 $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
-$bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM bookingTable"));
+$bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FROM bookingTable"));
 $messagesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM feedbackTable"));
 $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
 ?>
@@ -15,6 +15,7 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
     <link rel="icon" type="image/png" href="../img/logo.png">
     <link rel="stylesheet" href="../style/styles.css">
     <link rel="stylesheet" href="../style/alert_styles.css">
+    <link rel="stylesheet" href="../style/admin-styles.css">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
 </head>
@@ -29,13 +30,33 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
     </div>
     <div class="admin-container">
         <div class="admin-section admin-section1">
-            <ul>
-                <li><i class="fas fa-sliders-h"></i><a href="dashboard.php">Dashboard</a></li>
-                <li><i class="fas fa-ticket-alt"></i><a href="bookings.php">Bookings</a></li>
-                <li><i class="fas fa-film"></i><a href="movies.php">Movies</a></li>
-                <li><i class="fas fa-calendar-alt"></i><a href="schedule.php">Schedule</a></li>
-                <li><i class="fas fa-envelope"></i><a href="messages.php">Messages</a></li>
-            </ul>
+                <ul class="admin-sidebar-nav">
+                    <li class="admin-nav-item">
+                        <a href="dashboard.php" class="admin-nav-link">
+                            <i class="fas fa-sliders-h"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="bookings.php" class="admin-nav-link">
+                            <i class="fas fa-ticket-alt"></i>Bookings
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="movies.php" class="admin-nav-link">
+                            <i class="fas fa-film"></i>Movies
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="schedule.php" class="admin-nav-link">
+                            <i class="fas fa-calendar-alt"></i>Schedule
+                        </a>
+                    </li>
+                    <li class="admin-nav-item">
+                        <a href="messages.php" class="admin-nav-link">
+                            <i class="fas fa-envelope"></i>Messages
+                        </a>
+                    </li>
+                </ul>
         </div>
         <div class="admin-section admin-section2">
             <div class="admin-section-panel admin-section-stats">

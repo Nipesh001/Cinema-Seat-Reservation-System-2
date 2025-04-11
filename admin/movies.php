@@ -13,6 +13,7 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
     <link rel="icon" type="image/png" href="../img/logo.png">
     <link rel="stylesheet" href="../style/styles.css">
     <link rel="stylesheet" href="../style/alert_styles.css">
+    <link rel="stylesheet" href="../style/admin-styles.css">
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
     <style>
@@ -20,8 +21,8 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
         textarea[name="movieDescription"] {
             width: 100%;
             padding: 12px;
-            border: 2px solid black;
-            border-radius: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             font-family: inherit;
             font-size: 14px;
             margin-bottom: 15px;
@@ -37,11 +38,6 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
             outline: none;
             background-color: #fff;
             box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
-        }
-
-        td>a {
-            color: #0000ef;
-            text-decoration: underline;
         }
     </style>
 </head>
