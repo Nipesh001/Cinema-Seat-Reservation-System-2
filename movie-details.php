@@ -11,7 +11,7 @@ $movieID = (int)$_GET['id'];
 $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
 
 // Get movie details
-$movieQuery = "SELECT * FROM movieTable WHERE movieID = $movieID";
+$movieQuery = "SELECT * FROM movietable WHERE movieID = $movieID";
 $movieResult = mysqli_query($link, $movieQuery);
 $movie = mysqli_fetch_assoc($movieResult);
 
@@ -28,7 +28,7 @@ $showtimeQuery = "SELECT * FROM scheduletable
 $showtimeResult = mysqli_query($link, $showtimeQuery);
 
 // Get similar movies
-$similarQuery = "SELECT * FROM movieTable 
+$similarQuery = "SELECT * FROM movietable 
                 WHERE movieGenre LIKE '%{$movie['movieGenre']}%'
                 AND movieID != $movieID
                 LIMIT 4";
@@ -81,7 +81,7 @@ renderHeader();
         <div class="detail-content">
             <div class="trailer-container">
                 <div class="trailer-wrapper">
-                    <?php if (!empty($movie['movieTrailerLink'])): 
+                    <?php if (!empty($movie['movieTrailerLink'])):
                         // Extract YouTube video ID from URL
                         $videoId = '';
                         $url = $movie['movieTrailerLink'];
@@ -90,10 +90,10 @@ renderHeader();
                         }
                     ?>
                         <?php if ($videoId): ?>
-                            <iframe width="100%" height="100%" 
-                                src="https://www.youtube.com/embed/<?php echo $videoId; ?>?autoplay=0&rel=0" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            <iframe width="100%" height="100%"
+                                src="https://www.youtube.com/embed/<?php echo $videoId; ?>?autoplay=0&rel=0"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen>
                             </iframe>
                         <?php else: ?>

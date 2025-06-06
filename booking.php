@@ -37,7 +37,7 @@ if ($selectedDate && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $selectedDate)) {
 }
 
 // Get movie details using prepared statement
-$movieQuery = "SELECT * FROM movieTable WHERE movieID = ?";
+$movieQuery = "SELECT * FROM movietable WHERE movieID = ?";
 $stmt = mysqli_prepare($link, $movieQuery);
 mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
@@ -306,8 +306,8 @@ if ($selectedDate) {
                     </tr>
                 </table>
             </div>
-    <form class="booking-form" action="" method="POST">
-        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+            <form class="booking-form" action="booking.php?id=<?php echo $id; ?>&date=<?php echo urlencode($selectedDate); ?>&time=<?php echo urlencode($selectedTime); ?>" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <div class="form-group">
                     <label for="dateSelect">Select Date:</label>
                     <select name="date" id="dateSelect" required onchange="updateTimes()">
@@ -362,26 +362,26 @@ if ($selectedDate) {
                         <input placeholder="Last Name" type="text" name="lName">
                         <input placeholder="Phone Number" type="text" name="pNumber" maxlength="10" required>
 
-                        <button type="button" id="selectSeatBtn" class="submit-btn" style="margin-top:10px;" 
-                        <?php if (!$selectedDate || !$selectedTime || empty($theatres)) echo 'disabled'; ?>>SELECT SEAT</button>
+                        <button type="button" id="selectSeatBtn" class="submit-btn" style="margin-top:10px;"
+                            <?php if (!$selectedDate || !$selectedTime || empty($theatres)) echo 'disabled'; ?>>SELECT SEAT</button>
                         <input type="hidden" id="selectedSeat" name="selectedSeat" required>
 
                         <button type="submit" name="submit" class="submit-btn" onclick="return validateForm()">CONFIRM BOOKING</button>
                     </div>
-                </form>
-                <script>
-                    function validateForm() {
-                        const seats = document.querySelector('input[name="selectedSeat"]').value;
-                        if (!seats) {
-                            alert("Please select at least one seat");
-                            document.getElementById('selectSeatBtn').click();
-                            return false;
-                        }
-                        return true;
+            </form>
+            <script>
+                function validateForm() {
+                    const seats = document.querySelector('input[name="selectedSeat"]').value;
+                    if (!seats) {
+                        alert("Please select at least one seat");
+                        document.getElementById('selectSeatBtn').click();
+                        return false;
                     }
-                </script>
-            </div>
+                    return true;
+                }
+            </script>
         </div>
+    </div>
 
     <!-- Seat Selection Modal -->
     <div id="seatModal" class="modal">
@@ -496,6 +496,7 @@ if ($selectedDate) {
             cursor: not-allowed;
             position: relative;
         }
+
         .seat-booked::after {
             content: "✗";
             position: absolute;
@@ -591,7 +592,7 @@ if ($selectedDate) {
             const timeSelected = document.getElementById('timeSelect')?.value;
             const theatreSelected = document.getElementById('theatreSelect')?.value;
             const selectSeatBtn = document.getElementById('selectSeatBtn');
-            
+
             if (dateSelected && timeSelected && theatreSelected) {
                 selectSeatBtn.disabled = false;
             } else {
@@ -603,7 +604,7 @@ if ($selectedDate) {
         document.addEventListener('DOMContentLoaded', function() {
             // Check form completion on page load
             checkFormCompletion();
-            
+
             // Add event listeners to form elements
             document.getElementById('dateSelect').addEventListener('change', checkFormCompletion);
             if (document.getElementById('timeSelect')) {
@@ -621,7 +622,7 @@ if ($selectedDate) {
                 const dateSelected = document.getElementById('dateSelect').value;
                 const timeSelected = document.getElementById('timeSelect')?.value;
                 const theatreSelected = document.getElementById('theatreSelect')?.value;
-                
+
                 if (dateSelected && timeSelected && theatreSelected) {
                     modal.style.display = 'block';
                     try {
@@ -654,19 +655,19 @@ if ($selectedDate) {
                 const timeSelected = document.getElementById('timeSelect').value;
                 const theatreSelected = document.getElementById('theatreSelect').value;
                 const selectedSeats = document.querySelector('input[name="selectedSeat"]').value.split(',').filter(s => s);
-                
+
                 // First get the schedule ID
                 const scheduleResponse = await fetch(`getScheduleId.php?date=${dateSelected}&time=${timeSelected.replace('-', ':')}&theatre=${theatreSelected}&movieId=<?php echo $id; ?>`);
                 const scheduleData = await scheduleResponse.json();
-                
+
                 if (!scheduleData.scheduleId) {
                     alert('Error: Could not find schedule. Please try again.');
                     modal.style.display = 'none';
                     return;
                 }
-                
+
                 const scheduleId = scheduleData.scheduleId;
-                
+
                 if (scheduleId > 0) {
                     // Fetch booked seats from the database
                     fetch(`getBookedSeats.php?scheduleId=${scheduleId}`)
@@ -677,11 +678,11 @@ if ($selectedDate) {
                                 const seat = document.createElement('div');
                                 const isBooked = bookedSeats.includes(i);
                                 const isSelected = selectedSeats.includes(i.toString());
-                                
-                                seat.className = isBooked ? 'seat seat-booked' : 
-                                                isSelected ? 'seat seat-selected' : 'seat seat-available';
+
+                                seat.className = isBooked ? 'seat seat-booked' :
+                                    isSelected ? 'seat seat-selected' : 'seat seat-available';
                                 seat.textContent = i;
-                                
+
                                 if (!isBooked) {
                                     seat.onclick = function() {
                                         if (this.classList.contains('seat-selected')) {
@@ -709,9 +710,9 @@ if ($selectedDate) {
                 const selectedSeats = Array.from(document.querySelectorAll('.seat-selected'))
                     .map(seat => seat.textContent)
                     .join(',');
-                
+
                 document.getElementById('selectedSeat').value = selectedSeats;
-                document.getElementById('selectedSeatNumber').textContent = 
+                document.getElementById('selectedSeatNumber').textContent =
                     selectedSeats || 'None';
             }
 
@@ -741,44 +742,47 @@ if (empty($_SESSION['csrf_token'])) {
 if (isset($_POST['submit'])) {
     // Validate CSRF token
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Invalid CSRF token");
+        // Debug output for token mismatch
+        die("Invalid CSRF token. Expected: " . $_SESSION['csrf_token'] . " Received: " . ($_POST['csrf_token'] ?? 'none'));
     }
     // Input validation
     $errors = [];
-    
+
     // Validate first name (required, letters only, 2-50 chars)
     $firstName = trim($_POST['fName'] ?? '');
     if (empty($firstName) || !preg_match('/^[a-zA-Z ]{2,50}$/', $firstName)) {
         $errors[] = "Please enter a valid first name (2-50 letters)";
     }
-    
+
     // Validate last name (optional, but if provided must be letters only)
     $lastName = trim($_POST['lName'] ?? '');
     if (!empty($lastName) && !preg_match('/^[a-zA-Z ]*$/', $lastName)) {
         $errors[] = "Last name can only contain letters";
     }
-    
+
     // Validate phone number (required, exactly 10 digits)
     $phone = trim($_POST['pNumber'] ?? '');
     if (empty($phone) || !preg_match('/^\d{10}$/', $phone)) {
         $errors[] = "Please enter a valid 10-digit phone number";
     }
-    
+
     if (!empty($errors)) {
         echo "<script>alert('" . implode("\\n", $errors) . "'); window.history.back();</script>";
         exit();
     }
-    
+
     $seatNumbers = array_filter(
         array_map('intval', explode(',', $_POST['selectedSeat'])),
-        function($num) { return $num > 0; }
+        function ($num) {
+            return $num > 0;
+        }
     );
-    
+
     if (empty($seatNumbers)) {
         echo "<script>alert('Please select at least one valid seat'); window.history.back();</script>";
         exit();
     }
-    
+
     $scheduleId = 0;
 
     // Get schedule ID based on selected movie, date, time and theater using prepared statement
@@ -800,14 +804,14 @@ if (isset($_POST['submit'])) {
 
         // Check if any seats are already booked
         $placeholders = implode(',', array_fill(0, count($seatNumbers), '?'));
-        $checkQuery = "SELECT seat_number FROM seatBookings 
+        $checkQuery = "SELECT seat_number FROM seatbookings 
                       WHERE schedule_id = ? AND seat_number IN ($placeholders) AND is_booked = 1";
         $stmt = mysqli_prepare($link, $checkQuery);
         $types = str_repeat('i', count($seatNumbers));
         mysqli_stmt_bind_param($stmt, "i$types", $scheduleId, ...$seatNumbers);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        
+
         if (mysqli_num_rows($result) > 0) {
             $bookedSeats = [];
             while ($row = mysqli_fetch_assoc($result)) {
@@ -824,24 +828,26 @@ if (isset($_POST['submit'])) {
         mysqli_stmt_bind_param($stmt, "i", $user_id);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_store_result($stmt);
-        
+
         if (mysqli_stmt_num_rows($stmt) == 0) {
             throw new Exception("Invalid user ID");
         }
-        
-        $insert_query = "INSERT INTO bookingTable 
+
+        $insert_query = "INSERT INTO bookingtable 
             (movieName, bookingTheatre, bookingType, bookingDate, 
              bookingTime, bookingFName, bookingLName, bookingPNumber, user_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         // Start transaction for atomic operations
         mysqli_begin_transaction($link);
-        
+
         try {
             // Insert booking using prepared statement
             $stmt = mysqli_prepare($link, $insert_query);
             $time = str_replace('-', ':', $_POST["time"]);
-            mysqli_stmt_bind_param($stmt, "ssssssssi", 
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ssssssssi",
                 $movie['movieTitle'],
                 $_POST["theatre"],
                 $_POST["type"],
@@ -850,34 +856,38 @@ if (isset($_POST['submit'])) {
                 $_POST["fName"],
                 $_POST["lName"],
                 $_POST["pNumber"],
-                $user_id);
-            
+                $user_id
+            );
+
             if (!mysqli_stmt_execute($stmt)) {
                 throw new Exception("Booking failed: " . mysqli_error($link));
             }
-            
+
             $bookingId = mysqli_insert_id($link);
-            
+
             // Mark all selected seats as booked
-            $bookSeatQuery = "INSERT INTO seatBookings 
+            $bookSeatQuery = "INSERT INTO seatbookings 
                             (schedule_id, seat_number, is_booked, booking_id)
                             VALUES (?, ?, 1, ?)";
             $stmt = mysqli_prepare($link, $bookSeatQuery);
-            
+
             foreach ($seatNumbers as $seatNumber) {
                 mysqli_stmt_bind_param($stmt, "iii", $scheduleId, $seatNumber, $bookingId);
                 if (!mysqli_stmt_execute($stmt)) {
                     throw new Exception("Seat reservation failed for seat $seatNumber: " . mysqli_error($link));
                 }
             }
-            
+
             // Commit transaction if all succeeds
             mysqli_commit($link);
-            
+
             echo "<script>
             alert('Booking successful for seat(s): " . implode(', ', $seatNumbers) . "');
             window.location.href = 'index.php';
             </script>";
+
+            // Regenerate CSRF token after successful booking
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         } catch (Exception $e) {
             // Rollback transaction on error
             mysqli_rollback($link);

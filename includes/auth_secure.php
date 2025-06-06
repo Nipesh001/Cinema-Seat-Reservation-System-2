@@ -3,7 +3,12 @@
 if (session_status() === PHP_SESSION_NONE) {
     // Secure session settings
     ini_set('session.cookie_httponly', 1);
-    ini_set('session.cookie_secure', 1);  // Requires HTTPS
+    // Set cookie_secure only if HTTPS is used
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        ini_set('session.cookie_secure', 1);  // Requires HTTPS
+    } else {
+        ini_set('session.cookie_secure', 0);  // Allow HTTP for development
+    }
     ini_set('session.use_strict_mode', 1);
     ini_set('session.cookie_samesite', 'Strict');
     ini_set('session.gc_maxlifetime', 1800); // 30 minute timeout

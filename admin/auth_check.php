@@ -17,7 +17,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 // Verify admin status if logged in
 $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
 $adminId = $_SESSION['admin_id'] ?? 0;
-$query = "SELECT isSuperAdmin FROM adminTable WHERE adminID = $adminId";
+$query = "SELECT isSuperAdmin FROM admintable WHERE adminID = $adminId";
 $result = mysqli_query($link, $query);
 
 if ($row = mysqli_fetch_assoc($result)) {
@@ -29,4 +29,3 @@ if ($row = mysqli_fetch_assoc($result)) {
 }
 
 mysqli_close($link);
-?>

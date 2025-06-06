@@ -761,13 +761,13 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  align-items: center;
 }
 
 .admin-section-panel input,
 .admin-section-panel select,
 .admin-section-panel button {
   border-radius: 20px;
+  border: 1px solid #ddd;
   padding: 12px;
   width: 100%;
   /* max-width: 400px; */

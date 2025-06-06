@@ -6,7 +6,7 @@ $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
 $movie = [];
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $result = mysqli_query($link, "SELECT * FROM movieTable WHERE movieID = $id");
+    $result = mysqli_query($link, "SELECT * FROM movietable WHERE movieID = $id");
     $movie = mysqli_fetch_assoc($result);
 }
 
@@ -55,7 +55,7 @@ if (isset($_POST['submit'])) {
     }
 
     // Update movie in database
-    $stmt = $link->prepare("UPDATE movieTable SET 
+    $stmt = $link->prepare("UPDATE movietable SET 
         movieImg = ?, 
         movieTitle = ?, 
         movieGenre = ?, 
@@ -69,7 +69,7 @@ if (isset($_POST['submit'])) {
 
     $description = $_POST['movieDescription'];
     $trailerLink = $_POST['movieTrailerLink'];
-    
+
     $stmt->bind_param(
         "sssisssssi",
         $imgPath,

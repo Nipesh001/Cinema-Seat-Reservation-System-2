@@ -21,10 +21,10 @@ function getValidPoster($movie)
     // Get the actual filename from the database path
     $dbPath = $movie['movieImg'];
     $filename = basename($dbPath);
-    
+
     // Check if file exists in img directory
     $fullPath = $imgDir . $filename;
-    
+
     if (file_exists($fullPath) && is_readable($fullPath)) {
         return $fullPath;
     }
@@ -43,7 +43,7 @@ if ($db->connect_errno) {
 } else {
     $result = $db->query("
         SELECT movieID, movieTitle, movieImg, movieGenre, movieDuration, movieRelDate 
-        FROM movieTable 
+        FROM movietable 
         ORDER BY movieRelDate DESC
     ");
 
@@ -112,7 +112,7 @@ if ($db->connect_errno) {
     <!-- <div class="movies-grid">
         <?php
         $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
-        $movieQuery = "SELECT * FROM movieTable ORDER BY movieRelDate DESC";
+        $movieQuery = "SELECT * FROM movietable ORDER BY movieRelDate DESC";
         $movieResult = mysqli_query($link, $movieQuery);
 
         while ($movie = mysqli_fetch_assoc($movieResult)) {

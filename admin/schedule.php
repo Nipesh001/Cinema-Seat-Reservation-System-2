@@ -21,7 +21,8 @@ $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
     <div class="admin-section-header">
         <div class="admin-logo">PREMIUM CINEMA</div>
         <div class="admin-login-info">
-            <a href="#">Welcome, Admin</a>
+            <a href="#">Welcome, <?= htmlspecialchars($_SESSION['adminFullName'] ?? $_SESSION['admin_username'] ?? 'Admin') ?></a>
+            <a href="./adminLogout.php" style="margin-left: 20px; color: #f44336; font-weight: bold; text-decoration: none;">Logout</a>
             <img class="admin-user-avatar" src="../img/avatar.png" alt="">
         </div>
     </div>
@@ -46,7 +47,7 @@ $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
                         <select name="movieID" required>
                             <option value="">Select Movie</option>
                             <?php
-                            $movies = mysqli_query($link, "SELECT * FROM movieTable");
+                            $movies = mysqli_query($link, "SELECT * FROM movietable");
                             while ($movie = mysqli_fetch_array($movies)) {
                                 echo '<option value="' . $movie['movieID'] . '">' . $movie['movieTitle'] . '</option>';
                             }
@@ -64,9 +65,9 @@ $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
                         <?php
                         if (isset($_POST['addSchedule'])) {
                             // Verify table exists first
-                            $tableExists = mysqli_query($link, "SHOW TABLES LIKE 'scheduleTable'");
+                            $tableExists = mysqli_query($link, "SHOW TABLES LIKE 'scheduletable'");
                             if (mysqli_num_rows($tableExists) > 0) {
-                                $stmt = $link->prepare("INSERT INTO scheduleTable 
+                                $stmt = $link->prepare("INSERT INTO scheduletable 
                                     (movieID, theatre, scheduleDate, scheduleTime)
                                     VALUES (?, ?, ?, ?)");
                                 $stmt->bind_param(
@@ -99,11 +100,11 @@ $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
                 </div>
                 <div class="admin-panel-section-content">
                     <?php
-                    // Check if scheduleTable exists
-                    $tableExists = mysqli_query($link, "SHOW TABLES LIKE 'scheduleTable'");
+                    // Check if scheduletable exists
+                    $tableExists = mysqli_query($link, "SHOW TABLES LIKE 'scheduletable'");
                     if (mysqli_num_rows($tableExists) > 0) {
-                        $sql = "SELECT s.*, m.movieTitle, m.movieImg FROM scheduleTable s 
-                                JOIN movieTable m ON s.movieID = m.movieID
+                        $sql = "SELECT s.*, m.movieTitle, m.movieImg FROM scheduletable s 
+                                JOIN movietable m ON s.movieID = m.movieID
                                 ORDER BY m.movieTitle, s.scheduleDate, s.scheduleTime";
                         if ($result = mysqli_query($link, $sql)) {
                             if (mysqli_num_rows($result) > 0) {

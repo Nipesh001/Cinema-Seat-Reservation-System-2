@@ -28,4 +28,3 @@ if ($schedule) {
 } else {
     echo json_encode(['error' => 'Schedule not found']);
 }
-?>

@@ -3,12 +3,12 @@ require_once 'auth_check.php';
 $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
 
 // Check if bookingSeats column exists, if not create it
-$result = mysqli_query($link, "SHOW COLUMNS FROM bookingTable LIKE 'bookingSeats'");
+$result = mysqli_query($link, "SHOW COLUMNS FROM bookingtable LIKE 'bookingSeats'");
 if (mysqli_num_rows($result) == 0) {
-    mysqli_query($link, "ALTER TABLE bookingTable ADD COLUMN bookingSeats VARCHAR(255) NOT NULL DEFAULT 'N/A'");
+    mysqli_query($link, "ALTER TABLE bookingtable ADD COLUMN bookingSeats VARCHAR(255) NOT NULL DEFAULT 'N/A'");
 }
 
-$bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FROM bookingTable"));
+$bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FROM bookingtable"));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +29,8 @@ $bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FRO
     <div class="admin-section-header">
         <div class="admin-logo">PREMIUM CINEMA</div>
         <div class="admin-login-info">
-            <a href="#">Welcome, Admin</a>
+            <a href="#">Welcome, <?= htmlspecialchars($_SESSION['adminFullName'] ?? $_SESSION['admin_username'] ?? 'Admin') ?></a>
+            <a href="./adminLogout.php" style="margin-left: 20px; color: #f44336; font-weight: bold; text-decoration: none;">Logout</a>
             <img class="admin-user-avatar" src="../img/avatar.png" alt="">
         </div>
     </div>
@@ -83,8 +84,8 @@ $bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FRO
                         <tbody>
                             <?php
                             // Base query without seat information
-                            $sql = "SELECT b.*, m.movieImg FROM bookingTable b 
-                                    JOIN movieTable m ON b.movieName = m.movieTitle 
+                            $sql = "SELECT b.*, m.movieImg FROM bookingtable b 
+                                    JOIN movietable m ON b.movieName = m.movieTitle 
                                     ORDER BY b.bookingID DESC";
 
                             // Try to get seat information if seatbookings table exists
@@ -118,8 +119,8 @@ $bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FRO
                                             b.bookingPNumber,
                                             m.movieImg,
                                             GROUP_CONCAT(DISTINCT s.$seatNumberColumn SEPARATOR ', ') AS seatNumbers
-                                           FROM bookingTable b 
-                                           JOIN movieTable m ON b.movieName = m.movieTitle 
+                                           FROM bookingtable b 
+                                           JOIN movietable m ON b.movieName = m.movieTitle 
                                            LEFT JOIN seatbookings s ON s.$bookingIdColumn = b.bookingID
                                            GROUP BY 
                                             b.movieName,
@@ -132,8 +133,8 @@ $bookingsNo = mysqli_num_rows(mysqli_query($link, "SELECT DISTINCT bookingID FRO
                                     $seatInfoAvailable = true;
                                 } catch (Exception $e) {
                                     // Fallback to base query if error occurs
-                                    $sql = "SELECT b.*, m.movieImg FROM bookingTable b 
-                                            JOIN movieTable m ON b.movieName = m.movieTitle 
+                                    $sql = "SELECT b.*, m.movieImg FROM bookingtable b 
+                                            JOIN movietable m ON b.movieName = m.movieTitle 
                                             ORDER BY b.bookingID DESC";
                                 }
                             }

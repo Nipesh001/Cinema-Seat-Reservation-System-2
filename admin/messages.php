@@ -2,9 +2,9 @@
 require_once 'auth_check.php';
 $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
 $messagesNo = 0;
-$tableExists = mysqli_query($link, "SHOW TABLES LIKE 'feedbackTable'");
+$tableExists = mysqli_query($link, "SHOW TABLES LIKE 'feedbacktable'");
 if (mysqli_num_rows($tableExists) > 0) {
-    $messagesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM feedbackTable"));
+    $messagesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM feedbacktable"));
 }
 ?>
 <!DOCTYPE html>
@@ -26,7 +26,8 @@ if (mysqli_num_rows($tableExists) > 0) {
     <div class="admin-section-header">
         <div class="admin-logo">PREMIUM CINEMA</div>
         <div class="admin-login-info">
-            <a href="#">Welcome, Admin</a>
+            <a href="#">Welcome, <?= htmlspecialchars($_SESSION['adminFullName'] ?? $_SESSION['admin_username'] ?? 'Admin') ?></a>
+            <a href="./adminLogout.php" style="margin-left: 20px; color: #f44336; font-weight: bold; text-decoration: none;">Logout</a>
             <img class="admin-user-avatar" src="../img/avatar.png" alt="">
         </div>
     </div>
@@ -65,7 +66,7 @@ if (mysqli_num_rows($tableExists) > 0) {
                         </thead>
                         <tbody>
                             <?php
-                            $sql = "SELECT * FROM feedbackTable ORDER BY msgID DESC";
+                            $sql = "SELECT * FROM feedbacktable ORDER BY msgID DESC";
                             $result = mysqli_query($link, $sql);
 
                             if ($result) {

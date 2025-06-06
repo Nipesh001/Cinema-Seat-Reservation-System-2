@@ -21,10 +21,10 @@ function getValidPoster($movie)
     // Get the actual filename from the database path
     $dbPath = $movie['movieImg'];
     $filename = basename($dbPath);
-    
+
     // Check if file exists in img directory
     $fullPath = $imgDir . $filename;
-    
+
     if (file_exists($fullPath) && is_readable($fullPath)) {
         return $fullPath;
     }
@@ -43,7 +43,7 @@ if ($db->connect_errno) {
 } else {
     $result = $db->query("
         SELECT DISTINCT m.movieID, m.movieTitle, m.movieImg, m.movieGenre, m.movieDuration 
-        FROM movieTable m
+        FROM movietable m
         JOIN scheduletable s ON m.movieID = s.movieID
         WHERE s.scheduleDate >= CURDATE()
         ORDER BY m.movieRelDate DESC

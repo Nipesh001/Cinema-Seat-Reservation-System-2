@@ -1,7 +1,7 @@
 <?php
 require_once 'auth_check.php';
 $link = mysqli_connect("localhost", "root", "", "cinema_db", 3307);
-$moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
+$moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movietable"));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +46,8 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
     <div class="admin-section-header">
         <div class="admin-logo">PREMIUM CINEMA</div>
         <div class="admin-login-info">
-            <a href="#">Welcome, Admin</a>
+            <a href="#">Welcome, <?= htmlspecialchars($_SESSION['adminFullName'] ?? $_SESSION['admin_username'] ?? 'Admin') ?></a>
+            <a href="./adminLogout.php" style="margin-left: 20px; color: #f44336; font-weight: bold; text-decoration: none;">Logout</a>
             <img class="admin-user-avatar" src="../img/avatar.png" alt="">
         </div>
     </div>
@@ -110,37 +111,42 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                                 $uploadOk = 0;
                             }
 
-                            if ($uploadOk == 1) {
-                                if (move_uploaded_file($_FILES["movieImg"]["tmp_name"], $targetFile)) {
-                                    $stmt = $link->prepare("INSERT INTO movieTable 
-                                        (movieImg, movieTitle, movieGenre, movieDuration, movieRelDate, movieDirector, movieActors, movieDescription, movieTrailerLink)
-                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+if ($uploadOk == 1) {
+    if (isset($_FILES["movieImg"]["tmp_name"]) && is_uploaded_file($_FILES["movieImg"]["tmp_name"])) {
+        if (move_uploaded_file($_FILES["movieImg"]["tmp_name"], $targetFile)) {
+            $stmt = $link->prepare("INSERT INTO movietable 
+                (movieImg, movieTitle, movieGenre, movieDuration, movieRelDate, movieDirector, movieActors, movieDescription, movieTrailerLink)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                                    $imgPath = "img/" . $fileName;
-                                    $stmt->bind_param(
-                                        "sssisssss",
-                                        $imgPath,
-                                        $_POST["movieTitle"],
-                                        $_POST["movieGenre"],
-                                        $_POST["movieDuration"],
-                                        $_POST["movieRelDate"],
-                                        $_POST["movieDirector"],
-                                        $_POST["movieActors"],
-                                        $_POST["movieDescription"],
-                                        $_POST["movieTrailerLink"]
-                                    );
+            $imgPath = "img/" . $fileName;
+            $stmt->bind_param(
+                "sssisssss",
+                $imgPath,
+                $_POST["movieTitle"],
+                $_POST["movieGenre"],
+                $_POST["movieDuration"],
+                $_POST["movieRelDate"],
+                $_POST["movieDirector"],
+                $_POST["movieActors"],
+                $_POST["movieDescription"],
+                $_POST["movieTrailerLink"]
+            );
 
-                                    if ($stmt->execute()) {
-                                        echo '<p class="admin-success">Movie added successfully!</p>';
-                                        header("Refresh:2");
-                                    } else {
-                                        echo '<p class="admin-error">Error: ' . $stmt->error . '</p>';
-                                    }
-                                    $stmt->close();
-                                } else {
-                                    echo '<p class="admin-error">Error uploading file.</p>';
-                                }
-                            }
+            if ($stmt->execute()) {
+                echo '<p class="admin-success">Movie added successfully!</p>';
+                header("Refresh:2");
+            } else {
+                echo '<p class="admin-error">Error: ' . $stmt->error . '</p>';
+            }
+            $stmt->close();
+        } else {
+            $error = error_get_last();
+            echo '<p class="admin-error">Error on uploading file. ' . htmlspecialchars($error['message'] ?? 'Unknown error') . '</p>';
+        }
+    } else {
+        echo '<p class="admin-error">Uploaded file is not valid.</p>';
+    }
+}
                         }
                         ?>
                     </form>
@@ -168,7 +174,7 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                             </thead>
                             <tbody>
                                 <?php
-                                $sql = "SELECT * FROM movieTable ORDER BY movieID DESC";
+                                $sql = "SELECT * FROM movietable ORDER BY movieID DESC";
                                 if ($result = mysqli_query($link, $sql)) {
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($row = mysqli_fetch_array($result)) {
@@ -180,10 +186,10 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                                             echo '<td>' . $row['movieDirector'] . '</td>';
                                             echo '<td>' . $row['movieActors'] . '</td>';
                                             echo '<td class="movie-description">' . substr($row['movieDescription'], 0, 50) . '...</td>';
-                                            echo '<td><a href="' . $row['movieTrailerLink'] . '" target="_blank">Watch</a></td>';
+                                            echo '<td><a href="' . $row['movieTrailerLink'] . '" target="_blank" style = "color:blue; text-decoration: underline; ">Watch</a></td>';
                                             echo '<td>' . $row['movieRelDate'] . '</td>';
                                             echo '<td class="movie-actions">';
-                                            
+
                                             if ($_SESSION['isSuperAdmin'] ?? false) {
                                                 echo '<a href="editMovie.php?id=' . $row['movieID'] . '"><i class="fas fa-edit" title="Edit movie" style="margin-right:10px;color:#4CAF50;"></i></a>';
                                                 echo '<a href="deleteMovie.php?id=' . $row['movieID'] . '" onclick="return confirm(\'Delete ' . htmlspecialchars($row['movieTitle']) . '? This cannot be undone!\')">';
@@ -192,7 +198,7 @@ $moviesNo = mysqli_num_rows(mysqli_query($link, "SELECT * FROM movieTable"));
                                                 echo '<span class="disabled-action"><i class="fas fa-edit" title="Edit (Super Admin only)" style="margin-right:10px;color:#cccccc;"></i></span>';
                                                 echo '<span class="disabled-action"><i class="fas fa-trash" title="Delete (Super Admin only)"></i></span>';
                                             }
-                                            
+
                                             echo '</td>';
                                             echo '</tr>';
                                         }

@@ -11,7 +11,7 @@ if (!$link) {
 $scheduleId = isset($_GET['scheduleId']) ? (int)$_GET['scheduleId'] : 0;
 
 // Get all booked seats for this schedule
-$query = "SELECT seat_number FROM seatBookings 
+$query = "SELECT seat_number FROM seatbookings 
           WHERE schedule_id = ? AND is_booked = 1";
 $stmt = mysqli_prepare($link, $query);
 

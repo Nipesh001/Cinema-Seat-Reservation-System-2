@@ -20,7 +20,7 @@ if (!$link) {
 }
 
 // Check if booking exists
-$checkSql = "SELECT bookingID FROM bookingTable WHERE bookingID = ?";
+$checkSql = "SELECT bookingID FROM bookingtable WHERE bookingID = ?";
 $checkStmt = mysqli_prepare($link, $checkSql);
 mysqli_stmt_bind_param($checkStmt, "i", $bookingId);
 mysqli_stmt_execute($checkStmt);
@@ -34,7 +34,7 @@ if (mysqli_stmt_num_rows($checkStmt) === 0) {
 mysqli_stmt_close($checkStmt);
 
 // Delete booking
-$deleteSql = "DELETE FROM bookingTable WHERE bookingID = ?";
+$deleteSql = "DELETE FROM bookingtable WHERE bookingID = ?";
 $deleteStmt = mysqli_prepare($link, $deleteSql);
 mysqli_stmt_bind_param($deleteStmt, "i", $bookingId);
 
@@ -48,4 +48,3 @@ mysqli_stmt_close($deleteStmt);
 mysqli_close($link);
 header("Location: bookings.php");
 exit;
-?>

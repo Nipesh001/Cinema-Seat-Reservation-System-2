@@ -17,7 +17,7 @@ for ($i = 0; $i < 7; $i++) {
 }
 
 // Get all movies
-$movieQuery = "SELECT * FROM movieTable";
+$movieQuery = "SELECT * FROM movietable";
 $movieResult = mysqli_query($link, $movieQuery);
 
 // Get schedule data for selected date
@@ -30,7 +30,7 @@ $query = "SELECT
     s.scheduleTime,
     s.scheduleDate,
     s.theatre
-FROM movieTable m
+FROM movietable m
 JOIN scheduletable s ON m.movieID = s.movieID
 WHERE s.scheduleDate = '$selectedDate'
 ORDER BY m.movieTitle, s.theatre, s.scheduleTime";
@@ -104,11 +104,11 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 <td class="showtimes">
                                     <?php if (isset($movie['halls'][$hallType])):
                                         foreach ($movie['halls'][$hallType] as $showtime): ?>
-                                        
+
                                             <a href="booking.php?id=<?= htmlspecialchars($movieID) ?>&date=<?= htmlspecialchars(date('Y-m-d', strtotime($showtime['date']))) ?>&time=<?= htmlspecialchars(date('H-i', strtotime($showtime['time']))) ?>">
                                                 <?= htmlspecialchars(date('g:i A', strtotime($showtime['time']))) ?>
                                             </a>
-                                            
+
                                         <?php endforeach;
                                     else: ?>
                                         <span class="no-showtimes">-</span>

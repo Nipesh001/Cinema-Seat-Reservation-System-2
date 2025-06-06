@@ -20,7 +20,7 @@ try {
         }
 
         // Prepare and execute query
-        $stmt = $link->prepare("INSERT INTO `feedbackTable` ( `senderfName`, `senderlName`, `sendereMail`, `senderfeedback`) VALUES (?, ?, ?, ?)");
+        $stmt = $link->prepare("INSERT INTO `feedbacktable` ( `senderfName`, `senderlName`, `sendereMail`, `senderfeedback`) VALUES (?, ?, ?, ?)");
 
         if (!$stmt) {
             throw new Exception("Prepare failed: " . $link->error);
