@@ -7,9 +7,6 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
     exit;
 }
 
-// Hardcoded admin credentials (in production, use database)
-$admin_username = 'admin';
-$admin_password = 'admin123'; // In production, use password_hash()
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
